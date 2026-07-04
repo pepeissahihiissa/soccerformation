@@ -10,7 +10,7 @@
         :root {
             --court-green: #2ecc71;
             --court-line: rgba(255, 255, 255, 0.6);
-            --default-shirt-color: #e74c3c;
+            --default-shirt-color: #3498db; /* 初期ユニフォーム色を青に変更 */
             --shirt-text: #ffffff;
         }
 
@@ -330,9 +330,8 @@
             <div class="penalty-arc"></div>
 
             <div class="field-input-container">
-                <!-- 通常時：編集可能なinput要素 -->
+                <!-- 初期値を「My Original Team」に変更 -->
                 <input type="text" class="text-render-base team-name-input" id="teamNameInput" value="My Original Team" placeholder="TOUCH TO EDIT TEAM">
-                <!-- 画像書き出し時：重ね合わせ処理で100%綺麗なフチ文字を作るdiv要素 -->
                 <div class="text-render-base team-name-static" id="teamNameStatic" data-text=""></div>
                 
                 <textarea class="text-render-base team-notes-input" rows="1" placeholder="Tactics / notes..." oninput="autoGrow(this)"></textarea>
@@ -362,7 +361,7 @@
             <div class="form-group color-section">
                 <label>ユニフォームの色変更</label>
                 <div class="color-picker-wrapper">
-                    <input type="color" id="editColor" value="#e74c3c">
+                    <input type="color" id="editColor" value="#3498db">
                     <div class="color-btn-group">
                         <button class="btn btn-orange" style="padding: 6px 8px; font-size: 11px;" onclick="applyColorToIndividual()">個別に適用</button>
                         <button class="btn btn-success" style="padding: 6px 8px; font-size: 11px;" onclick="applyColorToAll()">全員に適用</button>
@@ -417,8 +416,10 @@
         const historyArea = document.getElementById('colorHistoryArea');
         let currentPlayerId = null;
 
-        let colorHistory = ["#e74c3c", "#f1c40f", "#3498db", "#2ecc71", "#ffffff"];
+        // 初期カラーパレット（デフォルト選択を青に変更）
+        let colorHistory = ["#3498db", "#e74c3c", "#f1c40f", "#2ecc71", "#ffffff"];
 
+        // 選手初期データ（カラーを全て#3498dbに統一）
         const initialPlayers = [
             { id: 1, num: "1", name: "GK選手\n(Cap)", x: 50, y: 88, color: "#3498db" },
             { id: 2, num: "4", name: "CB左", x: 35, y: 72, color: "#3498db" },
@@ -439,7 +440,7 @@
         }
 
         function rgbToHex(rgbString) {
-            if (!rgbString || !rgbString.startsWith('rgb')) return '#e74c3c';
+            if (!rgbString || !rgbString.startsWith('rgb')) return '#3498db';
             const rgb = rgbString.match(/\d+/g);
             return "#" + ((1 << 24) + (parseInt(rgb[0]) << 16) + (parseInt(rgb[1]) << 8) + parseInt(rgb[2])).toString(16).slice(1);
         }
@@ -597,19 +598,18 @@
             helpModalEl.style.display = 'none';
         }
 
-        // モーダルの外側をクリックした時に閉じる汎用設定
         window.addEventListener('click', (e) => {
             if (e.target === modal) closeModal();
             if (e.target === helpModalEl) closeHelpModal();
         });
 
-        // PNG出力ロジック：擬似要素とdata-textを利用した二重重ね合わせ描画
+        // PNG出力ロジック
         document.getElementById('savePngBtn').addEventListener('click', () => {
             document.activeElement.blur();
             
             const nameInput = document.getElementById('teamNameInput');
             const nameStatic = document.getElementById('teamNameStatic');
-            const textValue = nameInput.value || 'MY TEAM FC';
+            const textValue = nameInput.value || 'My Original Team';
             
             nameStatic.innerText = textValue;
             nameStatic.setAttribute('data-text', textValue);
